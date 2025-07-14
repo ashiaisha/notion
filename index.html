@@ -1,171 +1,90 @@
-<!-- original : https://codepen.io/SeanNorton/pen/LWBXQL -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Bebas+Neue" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aisha’s Clock</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f7f3ef;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>greeting2</title>
+    .card {
+      background-color: #e6dace;
+      padding: 30px 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      text-align: center;
+      color: #333;
+    }
 
-    <style>
+    .text {
+      font-size: 2rem;
+      margin: 10px 0;
+    }
 
-        /*CSS RESETS*/
+    .greeting {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
 
-body{
-    background-color: #fff;
-    line-height: 1.6;
+    @media (max-width: 600px) {
+      .text, .greeting {
+        font-size: 1.5rem;
+      }
 
-}
-
-h1 {
-    margin-top: 0;
-}
-
-
-/*CSS START*/
-
-.full-table {
-    display: table;
-    height: 100%;
-    width: 100%;
-}
-
-.table-cell {
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
-}
-
-.card {
-    padding: 10px 25px 10px 25px;
-    border-radius: 10px;
-    background: #8f684a;
-    width: 85vw;
-    color: #fff;
-    display: inline-block;
-    box-shadow: 2px 2px 1px 0px #330835;
-}
-
-.card:hover {
-    margin-top: 2px;
-    box-shadow: none;
-}
-
-.clock {
-    display: inline;
-    font-family: 'Abril';
-    font-size: 2em;
-   
-}
-
-.time {
-    display: inline;
-    min-width: 37px;
-}
-
-.colon {
-    font-size: 1.1em;
-    display: inline-block;
-}
-
-.date {
-    display: inline;
-    min-width: 162px;
-    font-family: 'Abril;
-    font-size: 2em;
-    padding-right: 30px;
-}
-.greet{
-    
-    display:inline;
-    font-family: 'Abril;
-    font-size: 2rem;
-     padding-right: 30px;
-}
-
-    </style>
+      .card {
+        padding: 20px;
+        width: 85vw;
+      }
+    }
+  </style>
 </head>
 <body>
-    <link href="https://fonts.googleapis.com/css?family=Lobster|Roboto:400,700" rel="stylesheet">
-
-<div class="full-table">
-  <div class="table-cell">
-    
-    <div class="card">
-        <div class="greet" id="greet"></div>
-      <div class="date" id="date"></div>
-      <div class="clock">
-        <div class="time" id="hour"></div>
-        <div class="colon">:</div>
-        <div class="time" id="min"></div>
-        <div class="colon">:</div>
-        <div class="time" id="sec"></div>
-      </div>
-    </div>
-    
+  <div class="card">
+    <div class="greeting" id="greet">Hello, Aisha</div>
+    <div class="text" id="date">Loading date...</div>
+    <div class="text" id="time">Loading time...</div>
   </div>
-</div>
 
-<script>
-    function date() {
-var today = new Date();
-document.getElementById('date').innerHTML = today.toDateString();
-}
+  <script>
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
 
+      const isPM = hours >= 12;
+      const hour12 = hours % 12 || 12;
+      const paddedMin = minutes.toString().padStart(2, '0');
+      const paddedSec = seconds.toString().padStart(2, '0');
 
-function clock() {
-var today = new Date();
-var hour = zeros(twelveHour(today.getHours()));
-var minutes = zeros(today.getMinutes());
-var seconds = zeros(today.getSeconds());
-if(today.getHours() >=12){
-    seconds+=" pm"
-}
-else{
-    seconds+=" am"
-}
-hrs = today.getHours();
-if (hrs < 12)
-        greet = 'morning aisha  ';
-    else if (hrs >= 12 && hrs <= 17)
-        greet = 'good afternoon aisha ';
-    else if (hrs >= 17 && hrs <= 24)
-        greet = 'good evening aisha ';
-// console.log(today.toLocaleTimeString());
-document.getElementById('greet').innerHTML = greet;
-document.getElementById('hour').innerHTML = hour;
-document.getElementById('min').innerHTML = minutes;
-document.getElementById('sec').innerHTML = seconds;
-}
+      const timeString = `${hour12}:${paddedMin}:${paddedSec} ${isPM ? 'PM' : 'AM'}`;
+      document.getElementById('time').textContent = timeString;
 
-function twelveHour(hour) {
-if (hour > 12) {
-    return hour -= 12 
-} else if (hour === 0) {
-    return hour = 12;
-} else {
-    return hour
-}
-}
-    
-// adds zero infront of single digit number
-function zeros(num) {
-if (num < 10) {
-    num = '0' + num
-};
-return num;
-}
+      document.getElementById('date').textContent = now.toDateString();
 
-function dateTime() {
-date();
-clock();
-setTimeout(dateTime, 500);
-}
+      // Greeting logic
+      let greetingText = '';
+      if (hours < 12) greetingText = 'Good morning, Aisha';
+      else if (hours < 17) greetingText = 'Good afternoon, Aisha';
+      else greetingText = 'Good evening, Aisha';
 
-dateTime()
-// END
-</script>
+      document.getElementById('greet').textContent = greetingText;
 
+      setTimeout(updateClock, 1000);
+    }
+
+    updateClock();
+  </script>
 </body>
 </html>
