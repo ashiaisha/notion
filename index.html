@@ -75,4 +75,22 @@
 
       const timeString = `${hours.toString().padStart(2, '0')}:${minutes
         .toString()
-        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${am
+        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
+
+      document.getElementById('time').textContent = timeString;
+
+      // Greeting logic
+      let greetingText = '';
+      if (now.getHours() < 12) greetingText = 'Good morning, Aisha';
+      else if (now.getHours() < 17) greetingText = 'Good afternoon, Aisha';
+      else greetingText = 'Good evening, Aisha';
+
+      document.getElementById('greet').textContent = greetingText;
+
+      setTimeout(updateClock, 1000);
+    }
+
+    updateClock();
+  </script>
+</body>
+</html>
