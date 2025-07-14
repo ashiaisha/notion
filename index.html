@@ -1,90 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aisha’s Clock</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #f7f3ef;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #a48871; /* Your new warm beige */
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  .card {
+    background-color: #e6dace;
+    padding: 30px 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    text-align: center;
+    color: #333;
+  }
+
+  .text {
+    font-size: 2rem;
+    margin: 10px 0;
+    font-weight: 300; /* lighter font weight */
+  }
+
+  .greeting {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 300; /* lighter and softer */
+    margin-bottom: 15px;
+  }
+
+  @media (max-width: 600px) {
+    .text, .greeting {
+      font-size: 1.5rem;
     }
 
     .card {
-      background-color: #e6dace;
-      padding: 30px 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      text-align: center;
-      color: #333;
+      padding: 20px;
+      width: 85vw;
     }
-
-    .text {
-      font-size: 2rem;
-      margin: 10px 0;
-    }
-
-    .greeting {
-      font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      margin-bottom: 15px;
-    }
-
-    @media (max-width: 600px) {
-      .text, .greeting {
-        font-size: 1.5rem;
-      }
-
-      .card {
-        padding: 20px;
-        width: 85vw;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="card">
-    <div class="greeting" id="greet">Hello, Aisha</div>
-    <div class="text" id="date">Loading date...</div>
-    <div class="text" id="time">Loading time...</div>
-  </div>
-
-  <script>
-    function updateClock() {
-      const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      const seconds = now.getSeconds();
-
-      const isPM = hours >= 12;
-      const hour12 = hours % 12 || 12;
-      const paddedMin = minutes.toString().padStart(2, '0');
-      const paddedSec = seconds.toString().padStart(2, '0');
-
-      const timeString = `${hour12}:${paddedMin}:${paddedSec} ${isPM ? 'PM' : 'AM'}`;
-      document.getElementById('time').textContent = timeString;
-
-      document.getElementById('date').textContent = now.toDateString();
-
-      // Greeting logic
-      let greetingText = '';
-      if (hours < 12) greetingText = 'Good morning, Aisha';
-      else if (hours < 17) greetingText = 'Good afternoon, Aisha';
-      else greetingText = 'Good evening, Aisha';
-
-      document.getElementById('greet').textContent = greetingText;
-
-      setTimeout(updateClock, 1000);
-    }
-
-    updateClock();
-  </script>
-</body>
-</html>
+  }
+</style>
