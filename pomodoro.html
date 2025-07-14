@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aisha’s Cute Pomodoro Timer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      background-color: #a48871;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #3a2f23;
+    }
+    .timer-container {
+      background: #e6dace;
+      padding: 40px 50px;
+      border-radius: 25px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      width: 320px;
+    }
+    .title {
+      font-weight: 500;
+      font-size: 2rem;
+      margin-bottom: 30px;
+    }
+    .time-display {
+      font-size: 4rem;
+      font-weight: 300;
+      margin-bottom: 30px;
+      letter-spacing: 5px;
+    }
+    button {
+      background-color: #a48871;
+      border: none;
+      color: #fff;
+      font-weight: 500;
+      padding: 12px 25px;
+      margin: 0 10px;
+      border-radius: 15px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    button:hover {
+      background-color: #8c6f56;
+    }
+    button:active {
+      background-color: #735c45;
+    }
+  </style>
+</head>
+<body>
+  <div class="timer-container">
+    <div class="title">Pomodoro Timer</div>
+    <div id="time" class="time-display">25:00</div>
+    <div>
+      <button id="startBtn">Start</button>
+      <button id="pauseBtn" disabled>Pause</button>
+      <button id="resetBtn">Reset</button>
+    </div>
+  </div>
+
+  <script>
+    let totalSeconds = 25 * 60;
+    let remainingSeconds = totalSeconds;
+    let timerInterval = null;
+    const timeDisplay = document.getElementById('time');
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    function formatTime(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function updateDisplay() {
+      timeDisplay.textContent = formatTime(remainingSeconds);
+    }
+
+    function startTimer() {
+      if (timerInterval) return; // Already running
+      timerInterval = setInterval(() => {
+        remainingSeconds--;
+        if (remainingSeconds <= 0) {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          alert('⏰ Time is up! Take a break, queen!');
+          remainingSeconds = totalSeconds;
+          updateDisplay();
+          startBtn.disabled = false;
+          pauseBtn.disabled = true;
+        } else {
+          updateDisplay();
+        }
+      }, 1000);
+      startBtn.disabled = true;
+      pauseBtn.disabled = false;
+    }
+
+    function pauseTimer() {
+      if (!timerInterval) return;
+      clearInterval(timerInterval);
+      timerInterval = null;
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      remainingSeconds = totalSeconds;
+      updateDisplay();
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+    }
+
+    startBtn.addEventListener('click', startTimer);
+    pauseBtn.addEventListener('click', pauseTimer);
+    resetBtn.addEventListener('click', resetTimer);
+
+    updateDisplay();
+  </script>
+</body>
+</html>
