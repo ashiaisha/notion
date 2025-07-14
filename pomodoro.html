@@ -3,131 +3,216 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Aisha’s Cute Pomodoro Timer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap" rel="stylesheet" />
+  <title>Pomodoro Timer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Bebas+Neue&display=swap" rel="stylesheet" />
   <style>
     body {
       margin: 0;
-      background-color: #a48871;
-      font-family: 'Poppins', sans-serif;
+      background: transparent;
+      font-family: 'Bebas Neue', cursive, sans-serif;
+      color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      color: #3a2f23;
+      user-select: none;
     }
-    .timer-container {
-      background: #e6dace;
-      padding: 40px 50px;
-      border-radius: 25px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    .container {
+      background: rgba(164, 136, 113, 0.85); /* brand color with transparency */
+      border-radius: 12px;
+      padding: 25px 35px;
+      width: 85vw;
+      max-width: 350px;
+      box-shadow: 2px 2px 8px rgba(51, 8, 53, 0.6);
       text-align: center;
-      width: 320px;
     }
-    .title {
-      font-weight: 500;
-      font-size: 2rem;
-      margin-bottom: 30px;
+    h2 {
+      margin: 0 0 20px 0;
+      font-family: 'Dancing Script', cursive;
+      font-weight: 700;
+      font-size: 2.5rem;
+      letter-spacing: 1.5px;
+      color: #fff;
     }
-    .time-display {
+    #timer {
       font-size: 4rem;
-      font-weight: 300;
-      margin-bottom: 30px;
-      letter-spacing: 5px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 25px;
+    }
+    .mode-label {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
     }
     button {
-      background-color: #a48871;
+      background-color: #fff;
+      color: #a48871;
+      font-family: 'Bebas Neue', cursive, sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
       border: none;
-      color: #fff;
-      font-weight: 500;
-      padding: 12px 25px;
-      margin: 0 10px;
-      border-radius: 15px;
+      padding: 10px 28px;
+      border-radius: 8px;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      box-shadow: 1px 1px 5px rgba(51, 8, 53, 0.5);
       user-select: none;
     }
     button:hover {
-      background-color: #8c6f56;
+      background-color: #a48871;
+      color: #fff;
     }
     button:active {
-      background-color: #735c45;
+      background-color: #8a7058;
+      color: #fff;
+    }
+    input[type="number"] {
+      width: 60px;
+      font-family: 'Bebas Neue', cursive, sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      border-radius: 8px;
+      border: none;
+      padding: 5px;
+      text-align: center;
+      margin-top: 5px;
+      user-select: text;
+    }
+    .inputs {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin-bottom: 20px;
+    }
+    label {
+      color: #fff;
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
     }
   </style>
 </head>
 <body>
-  <div class="timer-container">
-    <div class="title">Pomodoro Timer</div>
-    <div id="time" class="time-display">25:00</div>
-    <div>
-      <button id="startBtn">Start</button>
-      <button id="pauseBtn" disabled>Pause</button>
+  <div class="container" role="region" aria-label="Pomodoro Timer">
+    <h2>Pomodoro Timer</h2>
+    <div class="mode-label" id="modeLabel">Work</div>
+    <div id="timer">25:00</div>
+
+    <div class="inputs">
+      <label>
+        Work (mins)
+        <input type="number" id="workInput" min="1" max="60" value="25" />
+      </label>
+      <label>
+        Break (mins)
+        <input type="number" id="breakInput" min="1" max="30" value="5" />
+      </label>
+    </div>
+
+    <div class="buttons">
+      <button id="startPauseBtn">Start</button>
       <button id="resetBtn">Reset</button>
     </div>
   </div>
 
   <script>
-    let totalSeconds = 25 * 60;
-    let remainingSeconds = totalSeconds;
+    let workTime = 25 * 60;
+    let breakTime = 5 * 60;
+    let currentTime = workTime;
     let timerInterval = null;
-    const timeDisplay = document.getElementById('time');
-    const startBtn = document.getElementById('startBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
+    let isRunning = false;
+    let mode = 'work';
+
+    const timerEl = document.getElementById('timer');
+    const startPauseBtn = document.getElementById('startPauseBtn');
     const resetBtn = document.getElementById('resetBtn');
+    const modeLabel = document.getElementById('modeLabel');
+    const workInput = document.getElementById('workInput');
+    const breakInput = document.getElementById('breakInput');
 
     function formatTime(seconds) {
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const s = (seconds % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
     }
 
-    function updateDisplay() {
-      timeDisplay.textContent = formatTime(remainingSeconds);
+    function updateTimer() {
+      timerEl.textContent = formatTime(currentTime);
     }
 
-    function startTimer() {
-      if (timerInterval) return; // Already running
-      timerInterval = setInterval(() => {
-        remainingSeconds--;
-        if (remainingSeconds <= 0) {
-          clearInterval(timerInterval);
-          timerInterval = null;
-          alert('⏰ Time is up! Take a break, queen!');
-          remainingSeconds = totalSeconds;
-          updateDisplay();
-          startBtn.disabled = false;
-          pauseBtn.disabled = true;
-        } else {
-          updateDisplay();
-        }
-      }, 1000);
-      startBtn.disabled = true;
-      pauseBtn.disabled = false;
+    function switchMode() {
+      if (mode === 'work') {
+        mode = 'break';
+        currentTime = breakTime;
+        modeLabel.textContent = 'Break';
+      } else {
+        mode = 'work';
+        currentTime = workTime;
+        modeLabel.textContent = 'Work';
+      }
+      updateTimer();
     }
 
-    function pauseTimer() {
-      if (!timerInterval) return;
+    function tick() {
+      if (currentTime > 0) {
+        currentTime--;
+        updateTimer();
+      } else {
+        clearInterval(timerInterval);
+        isRunning = false;
+        startPauseBtn.textContent = 'Start';
+        switchMode();
+      }
+    }
+
+    startPauseBtn.addEventListener('click', () => {
+      if (isRunning) {
+        clearInterval(timerInterval);
+        isRunning = false;
+        startPauseBtn.textContent = 'Start';
+      } else {
+        const workVal = parseInt(workInput.value);
+        const breakVal = parseInt(breakInput.value);
+        if (!isNaN(workVal) && workVal > 0) workTime = workVal * 60;
+        if (!isNaN(breakVal) && breakVal > 0) breakTime = breakVal * 60;
+
+        if (mode === 'work') currentTime = workTime;
+        else currentTime = breakTime;
+
+        timerInterval = setInterval(tick, 1000);
+        isRunning = true;
+        startPauseBtn.textContent = 'Pause';
+        updateTimer();
+      }
+    });
+
+    resetBtn.addEventListener('click', () => {
       clearInterval(timerInterval);
-      timerInterval = null;
-      startBtn.disabled = false;
-      pauseBtn.disabled = true;
-    }
+      isRunning = false;
+      startPauseBtn.textContent = 'Start';
 
-    function resetTimer() {
-      clearInterval(timerInterval);
-      timerInterval = null;
-      remainingSeconds = totalSeconds;
-      updateDisplay();
-      startBtn.disabled = false;
-      pauseBtn.disabled = true;
-    }
+      const workVal = parseInt(workInput.value);
+      const breakVal = parseInt(breakInput.value);
+      if (!isNaN(workVal) && workVal > 0) workTime = workVal * 60;
+      if (!isNaN(breakVal) && breakVal > 0) breakTime = breakVal * 60;
 
-    startBtn.addEventListener('click', startTimer);
-    pauseBtn.addEventListener('click', pauseTimer);
-    resetBtn.addEventListener('click', resetTimer);
+      if (mode === 'work') currentTime = workTime;
+      else currentTime = breakTime;
 
-    updateDisplay();
+      updateTimer();
+    });
+
+    updateTimer();
   </script>
 </body>
 </html>
