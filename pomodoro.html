@@ -1,215 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pomodoro Timer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Bebas+Neue&display=swap" rel="stylesheet" />
-  <style>
-    body {
-      margin: 0;
-      background: transparent;
-      font-family: 'Bebas Neue', cursive, sans-serif;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      user-select: none;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aisha's Pomodoro Timer + Custom + Alerts</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
-    .card {
-      background: #a48871;
-      width: 85vw;
-      max-width: 380px;
-      border-radius: 10px;
-      padding: 25px 30px;
-      box-shadow: 2px 2px 1px 0px #330835;
-      text-align: center;
-    }
+  body {
+    margin: 0;
+    background-color: rgba(26, 27, 31, 0.85);
+    color: #e0e0e0;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    user-select: none;
+  }
 
-    h2 {
-      font-family: 'Dancing Script', cursive;
-      font-weight: 700;
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      user-select: none;
-    }
+  .container {
+    text-align: center;
+    background: rgba(40, 41, 45, 0.9);
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    width: 320px;
+  }
 
-    .mode-label {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.8rem;
-      margin-bottom: 15px;
-      user-select: none;
-    }
+  h2 {
+    margin-bottom: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
 
-    #timer {
-      font-family: 'Bebas Neue', cursive, sans-serif;
-      font-size: 4rem;
-      letter-spacing: 3px;
-      font-variant-numeric: tabular-nums;
-      margin-bottom: 25px;
-      user-select: none;
-    }
+  #timer {
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    font-variant-numeric: tabular-nums;
+  }
 
-    .inputs {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-bottom: 20px;
-    }
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
 
-    label {
-      font-family: 'Dancing Script', cursive;
-      font-size: 1.3rem;
-      user-select: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: #fff;
-    }
+  button {
+    background-color: #a48871;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+    transition: background-color 0.3s ease;
+    user-select: none;
+  }
 
-    input[type="number"] {
-      width: 60px;
-      padding: 6px;
-      border-radius: 6px;
-      border: none;
-      font-family: 'Bebas Neue', cursive, sans-serif;
-      font-size: 1.5rem;
-      text-align: center;
-      margin-top: 5px;
-      user-select: text;
-    }
+  button:hover {
+    background-color: #b99f85;
+  }
 
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
+  button:active {
+    background-color: #8a7058;
+  }
 
-    button {
-      background: #330835;
-      color: #fff;
-      font-family: 'Bebas Neue', cursive, sans-serif;
-      font-weight: 700;
-      font-size: 1.3rem;
-      padding: 10px 28px;
-      border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 2px 2px 5px rgba(51,8,53,0.5);
-      user-select: none;
-      transition: background-color 0.3s ease;
-      border: none;
-    }
+  .mode-label {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: #cfcfcf;
+    font-weight: 500;
+  }
 
-    button:hover {
-      background-color: #4b1763;
-    }
+  .inputs {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
 
-    button:active {
-      background-color: #23042a;
-    }
-  </style>
+  .inputs label {
+    font-size: 0.9rem;
+    color: #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  input[type="number"] {
+    width: 50px;
+    padding: 6px;
+    border-radius: 6px;
+    border: none;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  input[type="number"]:focus {
+    outline: 2px solid #a48871;
+  }
+
+</style>
 </head>
 <body>
-  <div class="card" role="region" aria-label="Pomodoro Timer">
-    <h2>Pomodoro Timer</h2>
-    <div class="mode-label" id="modeLabel">Work</div>
-    <div id="timer">25:00</div>
 
-    <div class="inputs">
-      <label>
-        Work (mins)
-        <input type="number" id="workInput" min="1" max="60" value="25" />
-      </label>
-      <label>
-        Break (mins)
-        <input type="number" id="breakInput" min="1" max="30" value="5" />
-      </label>
-    </div>
+<div class="container" role="region" aria-label="Pomodoro Timer with Custom Times">
+  <h2>Pomodoro Timer</h2>
+  <div class="mode-label" id="modeLabel">Work</div>
+  <div id="timer">25:00</div>
 
-    <div class="buttons">
-      <button id="startPauseBtn">Start</button>
-      <button id="resetBtn">Reset</button>
-    </div>
+  <div class="inputs">
+    <label>
+      Work (mins)
+      <input type="number" id="workInput" min="1" max="60" value="25" />
+    </label>
+    <label>
+      Break (mins)
+      <input type="number" id="breakInput" min="1" max="30" value="5" />
+    </label>
   </div>
 
-  <script>
-    let workTime = 25 * 60;
-    let breakTime = 5 * 60;
-    let currentTime = workTime;
-    let timerInterval = null;
-    let isRunning = false;
-    let mode = 'work';
+  <div class="buttons">
+    <button id="startPauseBtn">Start</button>
+    <button id="resetBtn">Reset</button>
+  </div>
+</div>
 
-    const timerEl = document.getElementById('timer');
-    const startPauseBtn = document.getElementById('startPauseBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const modeLabel = document.getElementById('modeLabel');
-    const workInput = document.getElementById('workInput');
-    const breakInput = document.getElementById('breakInput');
+<!-- Sound alert -->
+<audio id="alertSound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
 
-    function formatTime(seconds) {
-      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-      const s = (seconds % 60).toString().padStart(2, '0');
-      return `${m}:${s}`;
+<script>
+  let workTime = 25 * 60; // default seconds
+  let breakTime = 5 * 60; // default seconds
+
+  let currentTime = workTime;
+  let timerInterval = null;
+  let isRunning = false;
+  let mode = 'work'; // 'work' or 'break'
+
+  const timerEl = document.getElementById('timer');
+  const startPauseBtn = document.getElementById('startPauseBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const modeLabel = document.getElementById('modeLabel');
+  const workInput = document.getElementById('workInput');
+  const breakInput = document.getElementById('breakInput');
+  const alertSound = document.getElementById('alertSound');
+
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  function updateTimer() {
+    timerEl.textContent = formatTime(currentTime);
+  }
+
+  function switchMode() {
+    alertSound.play().catch(() => {}); // play alert, ignore if blocked by browser
+    if (mode === 'work') {
+      mode = 'break';
+      currentTime = breakTime;
+      modeLabel.textContent = 'Break';
+      modeLabel.style.color = '#7ec8a9'; // calm green
+    } else {
+      mode = 'work';
+      currentTime = workTime;
+      modeLabel.textContent = 'Work';
+      modeLabel.style.color = '#a48871'; // brand color
     }
+    updateTimer();
+  }
 
-    function updateTimer() {
-      timerEl.textContent = formatTime(currentTime);
-    }
-
-    function switchMode() {
-      if (mode === 'work') {
-        mode = 'break';
-        currentTime = breakTime;
-        modeLabel.textContent = 'Break';
-      } else {
-        mode = 'work';
-        currentTime = workTime;
-        modeLabel.textContent = 'Work';
-      }
+  function tick() {
+    if (currentTime > 0) {
+      currentTime--;
       updateTimer();
-    }
-
-    function tick() {
-      if (currentTime > 0) {
-        currentTime--;
-        updateTimer();
-      } else {
-        clearInterval(timerInterval);
-        isRunning = false;
-        startPauseBtn.textContent = 'Start';
-        switchMode();
-      }
-    }
-
-    startPauseBtn.addEventListener('click', () => {
-      if (isRunning) {
-        clearInterval(timerInterval);
-        isRunning = false;
-        startPauseBtn.textContent = 'Start';
-      } else {
-        const workVal = parseInt(workInput.value);
-        const breakVal = parseInt(breakInput.value);
-        if (!isNaN(workVal) && workVal > 0) workTime = workVal * 60;
-        if (!isNaN(breakVal) && breakVal > 0) breakTime = breakVal * 60;
-
-        if (mode === 'work') currentTime = workTime;
-        else currentTime = breakTime;
-
-        timerInterval = setInterval(tick, 1000);
-        isRunning = true;
-        startPauseBtn.textContent = 'Pause';
-        updateTimer();
-      }
-    });
-
-    resetBtn.addEventListener('click', () => {
+    } else {
       clearInterval(timerInterval);
       isRunning = false;
       startPauseBtn.textContent = 'Start';
+      switchMode();
+    }
+  }
 
+  startPauseBtn.addEventListener('click', () => {
+    if (isRunning) {
+      clearInterval(timerInterval);
+      isRunning = false;
+      startPauseBtn.textContent = 'Start';
+    } else {
+      // Update workTime and breakTime from inputs only if timer is stopped
       const workVal = parseInt(workInput.value);
       const breakVal = parseInt(breakInput.value);
       if (!isNaN(workVal) && workVal > 0) workTime = workVal * 60;
@@ -218,10 +204,33 @@
       if (mode === 'work') currentTime = workTime;
       else currentTime = breakTime;
 
+      timerInterval = setInterval(tick, 1000);
+      isRunning = true;
+      startPauseBtn.textContent = 'Pause';
       updateTimer();
-    });
+    }
+  });
+
+  resetBtn.addEventListener('click', () => {
+    clearInterval(timerInterval);
+    isRunning = false;
+    startPauseBtn.textContent = 'Start';
+
+    // Update workTime and breakTime from inputs on reset too
+    const workVal = parseInt(workInput.value);
+    const breakVal = parseInt(breakInput.value);
+    if (!isNaN(workVal) && workVal > 0) workTime = workVal * 60;
+    if (!isNaN(breakVal) && breakVal > 0) breakTime = breakVal * 60;
+
+    if (mode === 'work') currentTime = workTime;
+    else currentTime = breakTime;
 
     updateTimer();
-  </script>
+  });
+
+  // Initialize display
+  updateTimer();
+</script>
+
 </body>
 </html>
