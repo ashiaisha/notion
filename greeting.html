@@ -3,60 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Greeting Widget</title>
+  <title>Mini Greeting Widget</title>
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=Cormorant+Garamond:wght@400&display=swap" rel="stylesheet">
   <link href="https://api.fontshare.com/v2/css?f[]=wolfgang@700&display=swap" rel="stylesheet">
 
   <style>
     body {
       margin: 0;
       background: transparent;
-      color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      font-smooth: always;
+      color: #fff;
     }
 
     .card {
       background: #a48871;
-      width: 85vw;
-      max-width: 380px;
+      width: 230px;
       border-radius: 10px;
-      padding: 25px 30px;
-      box-shadow: 2px 2px 1px 0px #330835;
+      padding: 15px 18px;
+      box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
       text-align: center;
     }
 
     .greet {
       font-family: 'Wolfgang', sans-serif;
-      font-size: 2.5rem;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
+      font-size: 1.2rem;
+      margin-bottom: 6px;
     }
 
     .date {
       font-family: 'Playfair Display', serif;
-      font-size: 1.5rem;
-      margin-bottom: 15px;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
     }
 
     .clock {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 2.2rem;
-      letter-spacing: 2px;
+      font-size: 1.2rem;
+      letter-spacing: 1px;
     }
 
     .time {
       display: inline-block;
-      min-width: 35px;
+      min-width: 26px;
     }
 
     .colon {
-      padding: 0 5px;
+      padding: 0 3px;
     }
   </style>
 </head>
@@ -91,17 +88,14 @@
       const mins = now.getMinutes();
       const secs = now.getSeconds();
 
-      // Greeting
       let greetText = "Hi Aisha";
       if (hours < 12) greetText = "Good morning, Aisha";
       else if (hours < 18) greetText = "Good afternoon, Aisha";
       else greetText = "Good evening, Aisha";
       document.getElementById("greet").textContent = greetText;
 
-      // Date
       document.getElementById("date").textContent = formatDate(now);
 
-      // Time
       const format = n => n.toString().padStart(2, "0");
       document.getElementById("hour").textContent = format(hours % 12 || 12);
       document.getElementById("min").textContent = format(mins);
