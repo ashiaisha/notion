@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mini Greeting Widget</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pomodoro Timer</title>
 
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=Cormorant+Garamond:wght@400&display=swap" rel="stylesheet">
-  <link href="https://api.fontshare.com/v2/css?f[]=wolfgang@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=Cormorant+Garamond:wght@400&display=swap" rel="stylesheet" />
+  <link href="https://api.fontshare.com/v2/css?f[]=wolfgang@700&display=swap" rel="stylesheet"/>
 
   <style>
     body {
@@ -16,94 +16,174 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: auto;
+      height: 100vh;
       color: #fff;
     }
 
     .card {
       background: #8f684a;
-      width: 260px;
-      border-radius: 10px;
-      padding: 16px 20px;
-      box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+      width: 280px;
+      border-radius: 12px;
+      padding: 20px 25px;
       text-align: center;
+      box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
     }
 
-    .greet {
+    .title {
       font-family: 'Wolfgang', sans-serif;
-      font-size: 1.3rem;
-      margin-bottom: 6px;
-    }
-
-    .date {
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem;
+      font-size: 1.5rem;
       margin-bottom: 10px;
     }
 
-    .clock {
+    .timer {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.3rem;
-      letter-spacing: 1px;
+      font-size: 2.5rem;
+      margin: 10px 0;
+      letter-spacing: 2px;
     }
 
-    .time {
-      display: inline-block;
-      min-width: 26px;
+    .controls {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 12px;
     }
 
-    .colon {
-      padding: 0 3px;
+    button {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #fff;
+      color: #8f684a;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #e5d0bb;
+    }
+
+    .custom-inputs, .mode-select {
+      margin-top: 12px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+    }
+
+    input, select {
+      padding: 4px 6px;
+      border-radius: 5px;
+      border: none;
+      font-family: 'Playfair Display', serif;
+      margin-left: 5px;
+    }
+
+    .quote {
+      margin-top: 14px;
+      font-family: 'Playfair Display', serif;
+      font-size: 0.85rem;
+      color: #f1e8e0;
+      font-style: italic;
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="greet" id="greet">Hi Aisha</div>
-    <div class="date" id="date">Loading date...</div>
-    <div class="clock">
-      <span class="time" id="hour">--</span>
-      <span class="colon">:</span>
-      <span class="time" id="min">--</span>
-      <span class="colon">:</span>
-      <span class="time" id="sec">--</span>
+    <div class="title">Pomodoro Timer</div>
+    <div class="timer" id="display">25:00</div>
+    <div class="controls">
+      <button onclick="startTimer()">Start</button>
+      <button onclick="pauseTimer()">Pause</button>
+      <button onclick="resetTimer()">Reset</button>
     </div>
+    <div class="mode-select">
+      <label for="mode">Quick Mode:</label>
+      <select id="mode" onchange="setMode()">
+        <option value="25">Work</option>
+        <option value="5">Short Break</option>
+        <option value="15">Long Break</option>
+      </select>
+    </div>
+    <div class="custom-inputs">
+      <label>Custom (min):</label>
+      <input type="number" id="customTime" min="1" max="999" />
+      <button onclick="setCustomTime()">Set</button>
+    </div>
+    <div class="quote" id="quote">"Discipline equals freedom."</div>
   </div>
 
+  <audio id="alarm" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+
   <script>
-    function formatDate(dateObj) {
-      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      const months = ["January", "February", "March", "April", "May", "June",
-                      "July", "August", "September", "October", "November", "December"];
-      const day = days[dateObj.getDay()];
-      const date = dateObj.getDate();
-      const month = months[dateObj.getMonth()];
-      const year = dateObj.getFullYear();
-      return `${day}, ${month} ${date} ${year}`;
+    let duration = 25 * 60;
+    let timeLeft = duration;
+    let timer;
+    const display = document.getElementById("display");
+    const alarm = document.getElementById("alarm");
+    const quote = document.getElementById("quote");
+
+    const quotes = [
+      "Discipline equals freedom.",
+      "Stay focused and never give up.",
+      "Small steps every day.",
+      "Progress, not perfection.",
+      "Your future self will thank you."
+    ];
+
+    function updateDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      display.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
     }
 
-    function updateClock() {
-      const now = new Date();
-      const hours = now.getHours();
-      const mins = now.getMinutes();
-      const secs = now.getSeconds();
-
-      let greetText = "Hi Aisha";
-      if (hours < 12) greetText = "Good morning, Aisha";
-      else if (hours < 18) greetText = "Good afternoon, Aisha";
-      else greetText = "Good evening, Aisha";
-      document.getElementById("greet").textContent = greetText;
-
-      document.getElementById("date").textContent = formatDate(now);
-
-      const format = n => n.toString().padStart(2, "0");
-      document.getElementById("hour").textContent = format(hours % 12 || 12);
-      document.getElementById("min").textContent = format(mins);
-      document.getElementById("sec").textContent = format(secs);
+    function startTimer() {
+      if (!timer) {
+        timer = setInterval(() => {
+          if (timeLeft > 0) {
+            timeLeft--;
+            updateDisplay();
+          } else {
+            clearInterval(timer);
+            timer = null;
+            alarm.play();
+            quote.textContent = getRandomQuote();
+          }
+        }, 1000);
+      }
     }
 
-    setInterval(updateClock, 1000);
-    updateClock();
+    function pauseTimer() {
+      clearInterval(timer);
+      timer = null;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      timeLeft = duration;
+      updateDisplay();
+    }
+
+    function setMode() {
+      const minutes = parseInt(document.getElementById("mode").value);
+      duration = minutes * 60;
+      timeLeft = duration;
+      updateDisplay();
+    }
+
+    function setCustomTime() {
+      const customMinutes = parseInt(document.getElementById("customTime").value);
+      if (!isNaN(customMinutes) && customMinutes > 0) {
+        duration = customMinutes * 60;
+        timeLeft = duration;
+        updateDisplay();
+      }
+    }
+
+    function getRandomQuote() {
+      return quotes[Math.floor(Math.random() * quotes.length)];
+    }
+
+    updateDisplay();
   </script>
 </body>
 </html>
