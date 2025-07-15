@@ -4,21 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Greeting Widget</title>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Bebas+Neue&display=swap" rel="stylesheet">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=wolfgang@700&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
       background: transparent;
-      font-family: 'Playfair Display';
       color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      font-smooth: always;
     }
 
     .card {
-      background: #a48871; /* Beige background */
+      background: #a48871;
       width: 85vw;
       max-width: 380px;
       border-radius: 10px;
@@ -28,20 +32,21 @@
     }
 
     .greet {
-      font-family: 'Playfair Display';
-      font-size: 2rem;
+      font-family: 'Wolfgang', sans-serif;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
       margin-bottom: 10px;
     }
 
     .date {
-      font-family: 'Wolfgang';
-      font-size: 1.8rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
       margin-bottom: 15px;
     }
 
     .clock {
+      font-family: 'Cormorant Garamond', serif;
       font-size: 2.2rem;
-      font-family: 'Cormorant Garamond';
       letter-spacing: 2px;
     }
 
