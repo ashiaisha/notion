@@ -1,145 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>greeting widget for notion</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Poppins&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Greeting Widget</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px);}
-      to { opacity: 1; transform: translateY(0);}
-    }
-
-    @keyframes shimmer {
-      0% {
-        background-position: -200px 0;
-      }
-      100% {
-        background-position: 200px 0;
-      }
-    }
-
     body {
       margin: 0;
-      padding: 0;
-      height: 100vh;
       background: transparent;
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Bebas Neue', sans-serif;
+      color: #fff;
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #e0e0e0;
+      height: 100vh;
     }
 
     .card {
-      background-color: rgba(26, 27, 31, 0.85);
-      padding: 15px 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      background: #a48871; /* Beige background */
+      width: 85vw;
+      max-width: 380px;
+      border-radius: 10px;
+      padding: 25px 30px;
+      box-shadow: 2px 2px 1px 0px #330835;
       text-align: center;
-      max-width: 320px;
-      width: 280px;
-      user-select: none;
-      opacity: 0;
-      animation: fadeIn 0.8s ease forwards;
     }
 
-    .loading {
-      display: inline-block;
-      width: 180px;
-      height: 1.25em;
-      border-radius: 6px;
-      background: linear-gradient(90deg, #2a2b2f 25%, #3b3c40 50%, #2a2b2f 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      margin: 8px auto;
+    .greet {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2rem;
+      margin-bottom: 10px;
     }
 
-    .greeting {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.25rem;
-      margin-bottom: 8px;
-      font-weight: 300;
-      color: #f0f0f0;
-      min-height: 1.5em;
+    .date {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
     }
 
-    .date,
+    .clock {
+      font-size: 2.2rem;
+      font-family: 'Bebas Neue', sans-serif;
+      letter-spacing: 2px;
+    }
+
     .time {
-      font-size: 1rem;
-      margin: 4px 0;
-      font-weight: 300;
-      color: #ccc;
-      min-height: 1.25em;
+      display: inline-block;
+      min-width: 35px;
     }
 
-    @media (max-width: 600px) {
-      .card {
-        width: 90vw;
-      }
+    .colon {
+      padding: 0 5px;
     }
   </style>
 </head>
 <body>
-  <div class="card" aria-label="Greeting and time">
-    <div class="greeting loading" id="greet"></div>
-    <div class="date loading" id="date"></div>
-    <div class="time loading" id="time"></div>
+  <div class="card">
+    <div class="greet" id="greet">Hi Aisha</div>
+    <div class="date" id="date">Loading date...</div>
+    <div class="clock">
+      <span class="time" id="hour">--</span>
+      <span class="colon">:</span>
+      <span class="time" id="min">--</span>
+      <span class="colon">:</span>
+      <span class="time" id="sec">--</span>
+    </div>
   </div>
 
   <script>
-    function updateClock() {
-      const now = new Date();
-
-      const greetEl = document.getElementById('greet');
-      const dateEl = document.getElementById('date');
-      const timeEl = document.getElementById('time');
-
-      if (greetEl.classList.contains('loading')) {
-        greetEl.classList.remove('loading');
-        dateEl.classList.remove('loading');
-        timeEl.classList.remove('loading');
-      }
-
-      // Manual date format: Monday, July 14 2025 (no comma before year)
-      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const months = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-      ];
-
-      const dayName = days[now.getDay()];
-      const monthName = months[now.getMonth()];
-      const dayNum = now.getDate();
-      const year = now.getFullYear();
-
-      const formattedDate = `${dayName}, ${monthName} ${dayNum} ${year}`;
-      dateEl.textContent = formattedDate;
-
-      // Time with AM/PM
-      let hours = now.getHours();
-      let minutes = now.getMinutes();
-      let seconds = now.getSeconds();
-      const ampm = hours >= 12 ? 'PM' : 'AM';
-      hours = hours % 12 || 12;
-
-      const timeString = `${hours.toString().padStart(2, '0')}:${minutes
-        .toString()
-        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
-      timeEl.textContent = timeString;
-
-      // Greeting with emojis
-      let greetingText = '';
-      if (now.getHours() < 12) greetingText = 'Good morning, Aisha';
-      else if (now.getHours() < 17) greetingText = 'Good afternoon, Aisha';
-      else greetingText = 'Good evening, Aisha';
-
-      greetEl.textContent = greetingText;
-
-      setTimeout(updateClock, 1000);
+    function formatDate(dateObj) {
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const months = ["January", "February", "March", "April", "May", "June",
+                      "July", "August", "September", "October", "November", "December"];
+      const day = days[dateObj.getDay()];
+      const date = dateObj.getDate();
+      const month = months[dateObj.getMonth()];
+      const year = dateObj.getFullYear();
+      return `${day}, ${month} ${date} ${year}`;
     }
 
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours();
+      const mins = now.getMinutes();
+      const secs = now.getSeconds();
+
+      // Greeting
+      let greetText = "Hi Aisha";
+      if (hours < 12) greetText = "Good morning Aisha";
+      else if (hours < 18) greetText = "Good afternoon Aisha";
+      else greetText = "Good evening Aisha";
+      document.getElementById("greet").textContent = greetText;
+
+      // Date
+      document.getElementById("date").textContent = formatDate(now);
+
+      // Time
+      const format = n => n.toString().padStart(2, "0");
+      document.getElementById("hour").textContent = format(hours % 12 || 12);
+      document.getElementById("min").textContent = format(mins);
+      document.getElementById("sec").textContent = format(secs);
+    }
+
+    setInterval(updateClock, 1000);
     updateClock();
   </script>
 </body>
