@@ -1,236 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Aisha's Pomodoro Timer + Custom + Alerts</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini Greeting Widget</title>
 
-  body {
-    margin: 0;
-    background-color: rgba(26, 27, 31, 0.85);
-    color: #e0e0e0;
-    font-family: 'Poppins', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    user-select: none;
-  }
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=Cormorant+Garamond:wght@400&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=wolfgang@700&display=swap" rel="stylesheet">
 
-  .container {
-    text-align: center;
-    background: rgba(40, 41, 45, 0.9);
-    padding: 30px 40px;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-    width: 320px;
-  }
+  <style>
+    body {
+      margin: 0;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: auto;
+      color: #fff;
+    }
 
-  h2 {
-    margin-bottom: 15px;
-    font-weight: 600;
-    letter-spacing: 1px;
-  }
+    .card {
+      background: #8f684a;
+      width: 260px;
+      border-radius: 10px;
+      padding: 16px 20px;
+      box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
 
-  #timer {
-    font-size: 4rem;
-    font-weight: 700;
-    margin-bottom: 25px;
-    font-variant-numeric: tabular-nums;
-  }
+    .greet {
+      font-family: 'Wolfgang', sans-serif;
+      font-size: 1.3rem;
+      margin-bottom: 6px;
+    }
 
-  .buttons {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 20px;
-  }
+    .date {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
 
-  button {
-    background-color: #a48871;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    color: #fff;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.4);
-    transition: background-color 0.3s ease;
-    user-select: none;
-  }
+    .clock {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+    }
 
-  button:hover {
-    background-color: #b99f85;
-  }
+    .time {
+      display: inline-block;
+      min-width: 26px;
+    }
 
-  button:active {
-    background-color: #8a7058;
-  }
-
-  .mode-label {
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-    color: #cfcfcf;
-    font-weight: 500;
-  }
-
-  .inputs {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .inputs label {
-    font-size: 0.9rem;
-    color: #ccc;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  input[type="number"] {
-    width: 50px;
-    padding: 6px;
-    border-radius: 6px;
-    border: none;
-    text-align: center;
-    font-size: 1rem;
-  }
-
-  input[type="number"]:focus {
-    outline: 2px solid #a48871;
-  }
-
-</style>
+    .colon {
+      padding: 0 3px;
+    }
+  </style>
 </head>
 <body>
-
-<div class="container" role="region" aria-label="Pomodoro Timer with Custom Times">
-  <h2>Pomodoro Timer</h2>
-  <div class="mode-label" id="modeLabel">Work</div>
-  <div id="timer">25:00</div>
-
-  <div class="inputs">
-    <label>
-      Work (mins)
-      <input type="number" id="workInput" min="1" max="60" value="25" />
-    </label>
-    <label>
-      Break (mins)
-      <input type="number" id="breakInput" min="1" max="30" value="5" />
-    </label>
+  <div class="card">
+    <div class="greet" id="greet">Hi Aisha</div>
+    <div class="date" id="date">Loading date...</div>
+    <div class="clock">
+      <span class="time" id="hour">--</span>
+      <span class="colon">:</span>
+      <span class="time" id="min">--</span>
+      <span class="colon">:</span>
+      <span class="time" id="sec">--</span>
+    </div>
   </div>
 
-  <div class="buttons">
-    <button id="startPauseBtn">Start</button>
-    <button id="resetBtn">Reset</button>
-  </div>
-</div>
-
-<!-- Sound alert -->
-<audio id="alertSound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
-
-<script>
-  let workTime = 25 * 60; // default seconds
-  let breakTime = 5 * 60; // default seconds
-
-  let currentTime = workTime;
-  let timerInterval = null;
-  let isRunning = false;
-  let mode = 'work'; // 'work' or 'break'
-
-  const timerEl = document.getElementById('timer');
-  const startPauseBtn = document.getElementById('startPauseBtn');
-  const resetBtn = document.getElementById('resetBtn');
-  const modeLabel = document.getElementById('modeLabel');
-  const workInput = document.getElementById('workInput');
-  const breakInput = document.getElementById('breakInput');
-  const alertSound = document.getElementById('alertSound');
-
-  function formatTime(seconds) {
-    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const s = (seconds % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
-  }
-
-  function updateTimer() {
-    timerEl.textContent = formatTime(currentTime);
-  }
-
-  function switchMode() {
-    alertSound.play().catch(() => {}); // play alert, ignore if blocked by browser
-    if (mode === 'work') {
-      mode = 'break';
-      currentTime = breakTime;
-      modeLabel.textContent = 'Break';
-      modeLabel.style.color = '#7ec8a9'; // calm green
-    } else {
-      mode = 'work';
-      currentTime = workTime;
-      modeLabel.textContent = 'Work';
-      modeLabel.style.color = '#a48871'; // brand color
+  <script>
+    function formatDate(dateObj) {
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const months = ["January", "February", "March", "April", "May", "June",
+                      "July", "August", "September", "October", "November", "December"];
+      const day = days[dateObj.getDay()];
+      const date = dateObj.getDate();
+      const month = months[dateObj.getMonth()];
+      const year = dateObj.getFullYear();
+      return `${day}, ${month} ${date} ${year}`;
     }
-    updateTimer();
-  }
 
-  function tick() {
-    if (currentTime > 0) {
-      currentTime--;
-      updateTimer();
-    } else {
-      clearInterval(timerInterval);
-      isRunning = false;
-      startPauseBtn.textContent = 'Start';
-      switchMode();
+    function updateClock() {
+      const now = new Date();
+      const hours = now.getHours();
+      const mins = now.getMinutes();
+      const secs = now.getSeconds();
+
+      let greetText = "Hi Aisha";
+      if (hours < 12) greetText = "Good morning, Aisha";
+      else if (hours < 18) greetText = "Good afternoon, Aisha";
+      else greetText = "Good evening, Aisha";
+      document.getElementById("greet").textContent = greetText;
+
+      document.getElementById("date").textContent = formatDate(now);
+
+      const format = n => n.toString().padStart(2, "0");
+      document.getElementById("hour").textContent = format(hours % 12 || 12);
+      document.getElementById("min").textContent = format(mins);
+      document.getElementById("sec").textContent = format(secs);
     }
-  }
 
-  startPauseBtn.addEventListener('click', () => {
-    if (isRunning) {
-      clearInterval(timerInterval);
-      isRunning = false;
-      startPauseBtn.textContent = 'Start';
-    } else {
-      // Update workTime and breakTime from inputs only if timer is stopped
-      const workVal = parseInt(workInput.value);
-      const breakVal = parseInt(breakInput.value);
-      if (!isNaN(workVal) && workVal > 0) workTime = workVal * 60;
-      if (!isNaN(breakVal) && breakVal > 0) breakTime = breakVal * 60;
-
-      if (mode === 'work') currentTime = workTime;
-      else currentTime = breakTime;
-
-      timerInterval = setInterval(tick, 1000);
-      isRunning = true;
-      startPauseBtn.textContent = 'Pause';
-      updateTimer();
-    }
-  });
-
-  resetBtn.addEventListener('click', () => {
-    clearInterval(timerInterval);
-    isRunning = false;
-    startPauseBtn.textContent = 'Start';
-
-    // Update workTime and breakTime from inputs on reset too
-    const workVal = parseInt(workInput.value);
-    const breakVal = parseInt(breakInput.value);
-    if (!isNaN(workVal) && workVal > 0) workTime = workVal * 60;
-    if (!isNaN(breakVal) && breakVal > 0) breakTime = breakVal * 60;
-
-    if (mode === 'work') currentTime = workTime;
-    else currentTime = breakTime;
-
-    updateTimer();
-  });
-
-  // Initialize display
-  updateTimer();
-</script>
-
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
 </body>
 </html>
